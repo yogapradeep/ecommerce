@@ -1,19 +1,26 @@
-// src/components/ProductsGrid.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store";
+import { RootState, AppDispatch } from "../store";
+import { fetchProducts } from "../slices/productSlice";
 import { addItemToCart } from "../slices/cartSlice";
 import { IProduct, IproductCatergory } from "../interfaces/IProduct";
 import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
 const ProductsGrid: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   const products = useSelector((state: RootState) => state.products.products);
+  const status = useSelector((state: RootState) => state.products.status);
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const categories: IproductCatergory[] = ["Chairs", "Table", "Top"];
+
+  useEffect(() => {
+    if (status === "idle") {
+      dispatch(fetchProducts());
+    }
+  }, [status, dispatch]);
 
   const isProductInCart = (product: IProduct) => {
     return cartItems.some((item) => item.id === product.id);
