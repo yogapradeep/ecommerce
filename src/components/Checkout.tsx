@@ -1,31 +1,58 @@
-// src/components/Checkout.tsx
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { clearCart } from "../slices/cartSlice";
+import { createUser } from "../services/user.service";
+import { createOrder } from "../services/order.service";
+import { RootState } from "../store";
 import { Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router";
-// import { useHistory } from 'react-router-dom';
 
 const Checkout: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const dispatch = useDispatch();
 
   const handleClose = () => setShowSuccess(false);
 
-  const dispatch = useDispatch();
-  // const history = useHistory();
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here, such as saving to database
-    dispatch(clearCart());
-    setShowSuccess(true);
-    setTimeout(() => {
-      setShowSuccess(false);
-      navigate("/");
-    }, 3000);
+    try {
+      const user = await createUser({ name, email });
+
+      const productsByCategory = cartItems.reduce(
+        (acc, item) => {
+          (
+            acc[item.category.toLowerCase() as "chairs" | "tables" | "tops"] ||
+            []
+          ).push(item.id);
+          return acc;
+        },
+        { chairs: [], tables: [], tops: [] } as Record<
+          "chairs" | "tables" | "tops",
+          number[]
+        >
+      );
+
+      const order = {
+        amount: cartItems.reduce((acc, item) => acc + item.price, 0),
+        user_id: user.id,
+        products: productsByCategory,
+      };
+
+      await createOrder(order);
+
+      dispatch(clearCart());
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+        navigate("/");
+      }, 5000);
+    } catch (error) {
+      console.error("Error creating order:", error);
+    }
   };
 
   return (
@@ -72,28 +99,15 @@ const Checkout: React.FC = () => {
           </button>
         </div>
       </form>
-      {showSuccess && (
-        // <div className="modal fade show d-block" tabIndex={-1} role="dialog">
-        //   <div className="modal-dialog" role="document">
-        //     <div className="modal-content">
-        //       <div className="modal-header">
-        //         <h5 className="modal-title">Success</h5>
-        //       </div>
-        //       <div className="modal-body">
-        //         <p>Your order has been placed successfully!</p>
-        //       </div>
-        //     </div>
-        //   </div>
-        // </div>
-        <Modal show={showSuccess} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Success</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <p>Your order has been placed successfully!</p>
-          </Modal.Body>
-        </Modal>
-      )}
+      <Modal show={showSuccess} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Success</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Your order has been placed successfully!</p>
+          <small>Note: It will navigate to home page after 5 seconds</small>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
