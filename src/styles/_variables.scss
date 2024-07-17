@@ -1,0 +1,55 @@
+$primary: #263238;
+$secondary: #65624C;
+$success: #66cb9f;
+$info: #4dc4ff;
+$warning: #f7936f;
+$danger: #f58787;
+$light: #e4e5e9;
+$dark: #344054;
+$white: #FFFFFF;
+$black: #263238;
+
+$gray-light: #F9F9F9;
+$gray-1: #E0E0E0;
+$gray-2: #B7B6B8;
+$gray-3: #828282;
+$gray-4: #4F4F4F;
+$gray-5: #333333;
+
+$yellow-1: #FFCF4B;
+$yellow-2: #FFC422;
+$yellow-icon: #FFBB00;
+
+// Override Bootstrap variables
+$theme-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "success": $success,
+  "info": $info,
+  "warning": $warning,
+  "danger": $danger,
+  "light": $light,
+  "dark": $dark,
+);
+
+:root {
+  --primary: #{$primary};
+  --secondary: #{$secondary};
+  --success: #{$success};
+  --info: #{$info};
+  --warning: #{$warning};
+  --danger: #{$danger};
+  --light: #{$light};
+  --dark: #{$dark};
+  --white: #{$white};
+  --black: #{$black};
+  --gray-light: #{$gray-light};
+  --gray-1: #{$gray-1};
+  --gray-2: #{$gray-2};
+  --gray-3: #{$gray-3};
+  --gray-4: #{$gray-4};
+  --gray-5: #{$gray-5};
+  --yellow-1: #{$yellow-1};
+  --yellow-2: #{$yellow-2};
+  --yellow-icon: #{$yellow-icon};
+}

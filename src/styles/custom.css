@@ -1,0 +1,7 @@
+.cart-dropdown-menu{
+    position: absolute;
+    right: 0;
+    min-Width: 350px;
+    z-Index: 1000;
+  
+}
