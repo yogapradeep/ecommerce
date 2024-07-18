@@ -5,6 +5,7 @@ import { store } from "./store";
 import ProductsGrid from "./components/ProductsGrid";
 import Cart from "./components/Cart";
 import Checkout from "./components/Checkout";
+import { Analytics } from "@vercel/analytics/react";
 
 const App: React.FC = () => {
   return (
@@ -24,6 +25,7 @@ const App: React.FC = () => {
             </Routes>
           </div>
         </div>
+        <Analytics />
       </BrowserRouter>
     </Provider>
   );
