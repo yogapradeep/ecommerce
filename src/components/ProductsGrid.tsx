@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "../store";
-import { fetchProducts } from "../slices/productSlice";
-import { addItemToCart } from "../slices/cartSlice";
-import { IProduct, IproductCatergory } from "../interfaces/IProduct";
 import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { IProduct, IproductCatergory } from "../interfaces/IProduct";
+import { addItemToCart } from "../slices/cartSlice";
+import { fetchProducts } from "../slices/productSlice";
+import { AppDispatch, RootState } from "../store";
 
 const ProductsGrid: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -14,7 +14,7 @@ const ProductsGrid: React.FC = () => {
   const products = useSelector((state: RootState) => state.products.products);
   const status = useSelector((state: RootState) => state.products.status);
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  const categories: IproductCatergory[] = ["Chairs", "Table", "Top"];
+  const categories: IproductCatergory[] = ["chairs", "tables", "tops"];
 
   useEffect(() => {
     if (status === "idle") {
@@ -30,6 +30,9 @@ const ProductsGrid: React.FC = () => {
     dispatch(addItemToCart(product));
     navigate("/checkout");
   };
+  function capitalizeFirstLetter(category: string): string {
+    return category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+  }
 
   return (
     <div>
@@ -39,7 +42,7 @@ const ProductsGrid: React.FC = () => {
 
       {categories.map((category) => (
         <div key={category}>
-          <h2 className="my-4">{category}</h2>
+          <h2 className="my-4">{capitalizeFirstLetter(category)}</h2>
           <div className="container mt-4">
             <div className="row">
               {products
