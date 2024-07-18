@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import { Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { clearCart } from "../slices/cartSlice";
-import { createUser } from "../services/user.service";
-import { createOrder } from "../services/order.service";
-import { RootState } from "../store";
-import { Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router";
+import { createOrder } from "../services/order.service";
+import { createUser } from "../services/user.service";
+import { clearCart } from "../slices/cartSlice";
+import { RootState } from "../store";
+
+type Category = "chairs" | "tables" | "tops";
 
 const Checkout: React.FC = () => {
   const [name, setName] = useState("");
@@ -22,19 +24,21 @@ const Checkout: React.FC = () => {
     try {
       const user = await createUser({ name, email });
 
-      const productsByCategory = cartItems.reduce(
-        (acc, item) => {
-          (
-            acc[item.category.toLowerCase() as "chairs" | "tables" | "tops"] ||
-            []
-          ).push(item.id);
-          return acc;
-        },
-        { chairs: [], tables: [], tops: [] } as Record<
-          "chairs" | "tables" | "tops",
-          number[]
-        >
-      );
+      // Initialize the categories
+      const productsByCategory: Record<Category, number[]> = {
+        chairs: [],
+        tables: [],
+        tops: [],
+      };
+
+      // Categorize the cart items
+      cartItems.forEach((item) => {
+        const category = item.category.toLowerCase() as Category;
+        if (category in productsByCategory) {
+          productsByCategory[category].push(item.id);
+        }
+      });
+      console.log("productsByCategory", productsByCategory);
 
       const order = {
         amount: cartItems.reduce((acc, item) => acc + item.price, 0),

@@ -1,4 +1,4 @@
-export type IproductCatergory = "Table" | "Chairs" | "Top";
+export type IproductCatergory = "chairs" | "tables" | "tops";
 
 export interface IProduct {
   id: number;

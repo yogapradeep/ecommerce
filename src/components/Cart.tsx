@@ -1,4 +1,3 @@
-// src/components/Cart.tsx
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
@@ -19,6 +18,8 @@ const Cart: React.FC = () => {
     dispatch(clearCart());
   };
 
+  const totalAmount = cartItems.reduce((total, item) => total + item.price, 0);
+
   return (
     <Dropdown className="cart-dropdown">
       <Dropdown.Toggle
@@ -28,7 +29,10 @@ const Cart: React.FC = () => {
         Cart ({cartItems.length})
       </Dropdown.Toggle>
 
-      <Dropdown.Menu className="p-3 cart-dropdown-menu">
+      <Dropdown.Menu
+        className="p-3 cart-dropdown-menu"
+        style={{ width: "300px" }}
+      >
         {cartItems.length > 0 ? (
           <div>
             <div
@@ -38,13 +42,25 @@ const Cart: React.FC = () => {
               {cartItems.map((item) => (
                 <Dropdown.Item
                   key={item.id}
-                  className="d-flex justify-content-between align-items-center"
+                  className="d-flex justify-content-between align-items-center position-relative"
                 >
-                  <div>
-                    {item.name} - ${item.price}
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      objectFit: "cover",
+                    }}
+                  />
+                  <div>{item.name}</div>
+                  <div className="ms-2">
+                    <div>
+                      <b>${item.price}</b>
+                    </div>
                   </div>
                   <button
-                    className="btn btn-danger btn-sm ms-3"
+                    className="btn btn-danger btn-sm ms-3 "
                     onClick={() => handleRemove(item.id)}
                   >
                     <MdDeleteForever />
@@ -52,7 +68,11 @@ const Cart: React.FC = () => {
                 </Dropdown.Item>
               ))}
             </div>
+            <div className="mt-2 text-center  w-75">
+              <strong>Total: ${totalAmount}</strong>
+            </div>
             <div className="dropdown-divider my-3"></div>
+
             <div className="d-flex justify-content-between">
               <button className="btn btn-danger" onClick={handleClear}>
                 Clear Cart
